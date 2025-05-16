@@ -3,9 +3,8 @@ const getSelectedFields = require("../utils/getSelectedFields");
 
 const resolvers = {
     Query: {
-        // ➜ /graphql?query={ get_idc_btt_by_id(id:1){message data{device_name status}} }
         get_idc_btt_by_id: async (_, { id }, __, info) => {
-            const selectedFields = getSelectedFields(info); // --> "device_name,status"
+            const selectedFields = getSelectedFields(info);
             const sql = `
                         SELECT ${selectedFields}
                         FROM ${process.env.IDC_BTT_TABLE}
@@ -35,24 +34,22 @@ const resolvers = {
                     totalPages,
                     totalCount,
                     data: [],
-                    
                 };
             }
 
             const sql = `
-    SELECT ${selectedFields}
-    FROM ${process.env.IDC_BTT_TABLE}
-    ORDER BY id DESC
-    LIMIT $1 OFFSET $2
-  `;
+                SELECT ${selectedFields}
+                FROM ${process.env.IDC_BTT_TABLE}
+                ORDER BY id DESC
+                LIMIT $1 OFFSET $2
+            `;
             const { rows } = await pool.query(sql, [limit, offset]);
 
             return {
                 message: "Success",
                 totalPages,
                 totalCount,
-                data: rows,
-                
+                data: rows,   
             };
         },
     },
@@ -61,11 +58,11 @@ const resolvers = {
         create_idc_btt: async (_, args) => {
             const { device_name, unit, unixtime, time, value } = args;
             const sql = `
-        INSERT INTO ${process.env.IDC_BTT_TABLE}
-          (device_name, unit,unixtime,time, value,create_at_bi)
-        VALUES ($1, $2, $3, $4,$5,NOW())
-        RETURNING *
-      `;
+                    INSERT INTO ${process.env.IDC_BTT_TABLE}
+                    (device_name, unit,unixtime,time, value,create_at_bi)
+                    VALUES ($1, $2, $3, $4,$5,NOW())
+                    RETURNING *
+                `;
             const { rows } = await pool.query(sql, [
                 device_name,
                 unit || null,
