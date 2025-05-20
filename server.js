@@ -18,8 +18,7 @@ app.use("/graphql", basicAuth);
 app.use(
   "/graphql",
   graphqlHTTP({
-    schema,
-    graphiql: true, // เปิด IDE ให้ทดสอบ
+    schema
   }),
 );
 

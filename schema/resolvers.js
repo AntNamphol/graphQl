@@ -22,6 +22,9 @@ const resolvers = {
                 if (row.create_at_bi) {
                     row.create_at_bi = formatUnixToDate(row.create_at_bi);
                 }
+                if (row.unixtime) {
+                    row.unixtime = formatUnixToDate(row.unixtime);
+                }
                 return row;
             });
 
@@ -65,6 +68,9 @@ const resolvers = {
                 if (row.create_at_bi) {
                     row.create_at_bi = formatUnixToDate(row.create_at_bi);
                 }
+                if (row.unixtime) {
+                    row.unixtime = formatUnixToDate(row.unixtime);
+                }
                 return row;
             });
             return {
@@ -75,6 +81,7 @@ const resolvers = {
                 data: rows,
             };
         },
+        
     },
 
     Mutation: {
@@ -100,7 +107,7 @@ const resolvers = {
             RETURNING *
         `;
 
-            const { rows } = await pool.query(sql, [
+            let { rows } = await pool.query(sql, [
                 newId,
                 device_name,
                 unit || null,
@@ -108,6 +115,20 @@ const resolvers = {
                 time || null,
                 value || null
             ]);
+            rows = rows.map((row) => {
+                // Convert unixtime to date
+                if (row.time) {
+                    row.time = formatUnixToDate(row.time);
+                }
+                // Convert create_at_bi to date
+                if (row.create_at_bi) {
+                    row.create_at_bi = formatUnixToDate(row.create_at_bi);
+                }
+                if (row.unixtime) {
+                    row.unixtime = formatUnixToDate(row.unixtime);
+                }
+                return row;
+            });
 
             return { message: "Created", data: rows[0] };
         },
@@ -146,7 +167,7 @@ const resolvers = {
         RETURNING *
     `;
 
-            const { rows } = await pool.query(updateSql, [
+            let { rows } = await pool.query(updateSql, [
                 updatedDeviceName,
                 updatedUnit,
                 updatedUnixtime,
@@ -154,6 +175,20 @@ const resolvers = {
                 updatedValue,
                 id
             ]);
+            rows = rows.map((row) => {
+                // Convert unixtime to date
+                if (row.time) {
+                    row.time = formatUnixToDate(row.time);
+                }
+                if (row.unixtime) {
+                    row.unixtime = formatUnixToDate(row.unixtime);
+                }
+                // Convert create_at_bi to date
+                if (row.create_at_bi) {
+                    row.create_at_bi = formatUnixToDate(row.create_at_bi);
+                }
+                return row;
+            });
 
             return { message: "Updated", data: rows[0] };
         },
@@ -166,7 +201,21 @@ const resolvers = {
             RETURNING *
         `;
 
-            const { rows } = await pool.query(sql, [id]);
+            let { rows } = await pool.query(sql, [id]);
+            rows = rows.map((row) => {
+                // Convert unixtime to date
+                if (row.time) {
+                    row.time = formatUnixToDate(row.time);
+                }
+                if (row.unixtime) {
+                    row.unixtime = formatUnixToDate(row.unixtime);
+                }
+                // Convert create_at_bi to date
+                if (row.create_at_bi) {
+                    row.create_at_bi = formatUnixToDate(row.create_at_bi);
+                }
+                return row;
+            });
 
             if (rows.length === 0) {
                 return { message: `No data found with id ${id}`, data: null };

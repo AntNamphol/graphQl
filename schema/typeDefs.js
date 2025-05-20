@@ -5,7 +5,7 @@ module.exports = buildSchema(`
     id: Int
     device_name: String
     unit: String
-    unixtime: Float
+    unixtime: String
     time: String
     value: Float
     create_at_bi: String
