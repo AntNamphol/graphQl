@@ -20,11 +20,14 @@ module.exports = buildSchema(`
     message: String
     totalPages: Int
     totalCount: Int
+    datacount: Int
     data: [IDC_BTT]
   }
 
   type Mutation {
     create_idc_btt(device_name: String,unit:String,unixtime:Float,time:String,value:Float): GetIDCResponse
+    update_idc_btt(id: Int!, device_name: String, unit: String, unixtime: Float, time: String, value: Float): GetIDCResponse
+    delete_idc_btt(id: Int!): GetIDCResponse
   }
 
   type Query {
