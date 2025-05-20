@@ -1,5 +1,7 @@
 const pool = require("../db");
 const getSelectedFields = require("../utils/getSelectedFields");
+const formatUnixToDate = require("../utils/convertStringToDate");
+
 
 const resolvers = {
     Query: {
@@ -10,7 +12,18 @@ const resolvers = {
                         FROM ${process.env.IDC_BTT_TABLE}
                         WHERE id = $1
                     `;
-            const { rows } = await pool.query(sql, [id]);
+            let { rows } = await pool.query(sql, [id]);
+            rows = rows.map((row) => {
+                // Convert unixtime to date
+                if (row.time) {
+                    row.time = formatUnixToDate(row.time);
+                }
+                // Convert create_at_bi to date
+                if (row.create_at_bi) {
+                    row.create_at_bi = formatUnixToDate(row.create_at_bi);
+                }
+                return row;
+            });
 
             if (!rows.length) {
                 return { message: `No data found with id ${id}`, data: null };
@@ -40,11 +53,20 @@ const resolvers = {
             const sql = `
                 SELECT ${selectedFields}
                 FROM ${process.env.IDC_BTT_TABLE}
-                ORDER BY id DESC
                 LIMIT $1 OFFSET $2
             `;
-            const { rows } = await pool.query(sql, [limit, offset]);
-
+            let { rows } = await pool.query(sql, [limit, offset]);
+            rows = rows.map((row) => {
+                // Convert unixtime to date
+                if (row.time) {
+                    row.time = formatUnixToDate(row.time);
+                }
+                // Convert create_at_bi to date
+                if (row.create_at_bi) {
+                    row.create_at_bi = formatUnixToDate(row.create_at_bi);
+                }
+                return row;
+            });
             return {
                 message: "Success",
                 totalPages,
