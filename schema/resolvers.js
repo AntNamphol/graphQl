@@ -90,22 +90,22 @@ const resolvers = {
 
             // Get the last inserted ID
             const sql_id = `
-            SELECT id
-            FROM ${process.env.IDC_BTT_TABLE}
-            ORDER BY id DESC
-            LIMIT 1
-        `;
+                SELECT id
+                FROM ${process.env.IDC_BTT_TABLE}
+                ORDER BY id DESC
+                LIMIT 1
+            `;
             const { rows: idRows } = await pool.query(sql_id);
             const lastId = idRows.length > 0 ? idRows[0].id : 0;
             const newId = lastId + 1;
 
             // Insert new record
             const sql = `
-            INSERT INTO ${process.env.IDC_BTT_TABLE}
-            (id, device_name, unit, unixtime, time, value, create_at_bi)
-            VALUES ($1, $2, $3, $4, $5, $6, NOW())
-            RETURNING *
-        `;
+                INSERT INTO ${process.env.IDC_BTT_TABLE}
+                (id, device_name, unit, unixtime, time, value, create_at_bi)
+                VALUES ($1, $2, $3, $4, $5, $6, NOW())
+                RETURNING *
+            `;
 
             let { rows } = await pool.query(sql, [
                 newId,
@@ -137,8 +137,8 @@ const resolvers = {
 
             // 1. ดึงข้อมูลเดิมก่อน
             const selectSql = `
-        SELECT * FROM ${process.env.IDC_BTT_TABLE} WHERE id = $1
-    `;
+                SELECT * FROM ${process.env.IDC_BTT_TABLE} WHERE id = $1
+            `;
             const { rows: existingRows } = await pool.query(selectSql, [id]);
 
             if (existingRows.length === 0) {
@@ -156,16 +156,16 @@ const resolvers = {
 
             // 3. อัปเดต
             const updateSql = `
-        UPDATE ${process.env.IDC_BTT_TABLE}
-        SET device_name = $1,
-            unit = $2,
-            unixtime = $3,
-            time = $4,
-            value = $5,
-            create_at_bi = NOW()
-        WHERE id = $6
-        RETURNING *
-    `;
+                UPDATE ${process.env.IDC_BTT_TABLE}
+                SET device_name = $1,
+                    unit = $2,
+                    unixtime = $3,
+                    time = $4,
+                    value = $5,
+                    create_at_bi = NOW()
+                WHERE id = $6
+                RETURNING *
+            `;
 
             let { rows } = await pool.query(updateSql, [
                 updatedDeviceName,
@@ -196,10 +196,10 @@ const resolvers = {
         delete_idc_btt: async (_, { id }) => {
             // Delete record
             const sql = `
-            DELETE FROM ${process.env.IDC_BTT_TABLE}
-            WHERE id = $1
-            RETURNING *
-        `;
+                DELETE FROM ${process.env.IDC_BTT_TABLE}
+                WHERE id = $1
+                RETURNING *
+            `;
 
             let { rows } = await pool.query(sql, [id]);
             rows = rows.map((row) => {
